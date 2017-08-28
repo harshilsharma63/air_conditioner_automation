@@ -57,7 +57,7 @@ void loop(void) {
      // was received or the code is finished, so print what
      // we've grabbed so far, and then reset
      if ((highpulse >= MAXPULSE) && (currentpulse != 0)) {
-       printpulses();
+       SendChannelUpCode();
        currentpulse=0;
        return;
      }
@@ -71,7 +71,7 @@ void loop(void) {
      lowpulse++;
      delayMicroseconds(RESOLUTION);
      if ((lowpulse >= MAXPULSE)  && (currentpulse != 0)) {
-       printpulses();
+       SendChannelUpCode();
        currentpulse=0;
        return;
      }
@@ -85,11 +85,14 @@ void loop(void) {
 void SendChannelUpCode(void) {
   Serial.println("\n\r\n\rReceived: \n\rOFF \tON");
   for (uint8_t i = 0; i < currentpulse; i++) {
-    Serial.print(, DEC);
+    Serial.print(pulses[i][0] * RESOLUTION, DEC);
     Serial.print(" usec, ");
-    Serial.print(, DEC);
+    Serial.print(pulses[i][1] * RESOLUTION, DEC);
     Serial.println(" usec");
   }
+
+  delay(10000);
+  
   Serial.println("Sending IR signal");
   for (uint8_t i = 0; i < currentpulse; i++) {
     delayMicroseconds(pulses[i][0] * RESOLUTION);
@@ -97,7 +100,7 @@ void SendChannelUpCode(void) {
 
   }
 
-  delay(10000);  // wait twenty seconds (20 seconds * 1000 milliseconds)
+  delay(3000);  // wait twenty seconds (20 seconds * 1000 milliseconds)
 
 }
 
